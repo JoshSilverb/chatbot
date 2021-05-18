@@ -12,10 +12,10 @@ MAX_LEN = 20
 EMBEDDING_DIM = 100
 VOCAB_SIZE = 1500
 TF_CPP_MIN_LOG_LEVEL=2
-batch_size = 128
+batch_size = 64
 epochs = 150
 frac = 5
-
+# length of convos = 83097
 
 def seq2seq_model_builder(HIDDEN_DIM, embedding_layer):
     
