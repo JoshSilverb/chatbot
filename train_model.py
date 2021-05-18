@@ -12,6 +12,10 @@ MAX_LEN = 20
 EMBEDDING_DIM = 100
 VOCAB_SIZE = 1500
 TF_CPP_MIN_LOG_LEVEL=2
+batch_size = 128
+epochs = 150
+frac = 5
+
 
 def seq2seq_model_builder(HIDDEN_DIM, embedding_layer):
     
@@ -36,7 +40,7 @@ def train():
     model_filepath = os.path.join(os.getcwd(), 'ckpt', 'model')
 
     convos = load_conversations()
-    enc_input, dec_input = convos_to_xy(convos[:int(len(convos)/8)])
+    enc_input, dec_input = convos_to_xy(convos[:int(len(convos)/frac)])
     dec_input = tagger(dec_input)
 
     tokenizer = Tokenizer(num_words=VOCAB_SIZE)
@@ -52,7 +56,7 @@ def train():
     dec_output_test = decoder_output_creater(dec_test, len(dec_test), MAX_LEN, VOCAB_SIZE)
     dec_output_val = decoder_output_creater(dec_val, len(dec_val), MAX_LEN, VOCAB_SIZE)
 
-    word2idx, idx2word = tokenize_words(convos[:int(len(convos)/8)], VOCAB_SIZE)
+    word2idx, idx2word = tokenize_words(convos[:int(len(convos)/frac)], VOCAB_SIZE)
     embeddings_index = gen_glove_dict()
     emb_matrix = gen_embedding_matrix(embeddings_index, word2idx, EMBEDDING_DIM)
     
@@ -82,8 +86,6 @@ def train():
             optimizer="Adam", loss="categorical_crossentropy", metrics=["accuracy"]
         )
 
-    batch_size = 128
-    epochs = 15
 
     model_checkpoint_callback = ModelCheckpoint(
         filepath=model_filepath,
